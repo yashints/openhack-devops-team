@@ -14,8 +14,11 @@ on:
 
 jobs:
   # The build and test workflow
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apis/trips
     steps:
     - uses: actions/checkout@v2
     - name: Setup Go
@@ -32,4 +35,22 @@ jobs:
       run: go test ./tests
     - name: Run integration tests
       run: go test
+  
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apis/trips
+    env:
+      BASEIMAGETAG: ${{ join(date +'%Y-%m-%d', github.run_id) }}
+    steps:
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    
+    - name: Build the image
+      run: |
+        az acr build --image "devopsoh/api-trips:${BASEIMAGETAG}" --registry $ACRNAME --file Dockerfile .
     
