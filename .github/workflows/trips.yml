@@ -13,6 +13,8 @@ on:
     paths:
     - '.github/workflows/**'
     - 'apis/trips/**'
+    
+environment: prod
 
 jobs:
   # The build and test workflow
@@ -46,8 +48,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: apis/trips
-    environment: prod
+        working-directory: apis/trips    
     steps:
     - uses: actions/checkout@v2
       with:
