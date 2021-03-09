@@ -51,13 +51,13 @@ jobs:
     - uses: actions/checkout@v2
       with:
         token: ${{ secrets.GH_PAT }}
-    - name: Set image tag name
-      run: echo "TAGNAME::$(date +'%Y-%m-%d'+github.run_id)" >> $GITHUB_ENV
+    - name: Set date
+      run: echo "DATE::$(date +'%Y-%m-%d')" >> $GITHUB_ENV
     - name: Azure Login
       uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
     - name: Build the image
       run: |
-        az acr build --image "devopsoh/api-trips:${TAGNAME}" --registry $ACRNAME --file Dockerfile .
+        az acr build --image "devopsoh/api-trips:${DATE}${github.run_id}" --registry $ACRNAME --file Dockerfile .
     
