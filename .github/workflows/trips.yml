@@ -17,6 +17,7 @@ on:
 jobs:
   # The build and test workflow
   build-and-test:
+    if: github.ref != 'refs/heads/main'
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -48,13 +49,12 @@ jobs:
         working-directory: apis/trips
     steps:
     - name: Get current date
-      id: date
-      run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+      run: echo "DATE::$(date +'%Y-%m-%d')" >> $GITHUB_ENV
     - name: Azure Login
       uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
     - name: Build the image
       run: |
-        az acr build --image "devopsoh/api-trips:${join(steps.date.outputs.date, github.run_id)}" --registry $ACRNAME --file Dockerfile .
+        az acr build --image "devopsoh/api-trips:${join(DATE, github.run_id)}" --registry $ACRNAME --file Dockerfile .
     
