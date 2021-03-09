@@ -1,18 +1,18 @@
-name: Trips API CI/CD
+name: User Profile API CI/CD
 
 on:
   push:
     branches:
     - main
     paths:
-    - '.github/workflows/trips.yml'
-    - 'apis/trips/**'
+    - '.github/workflows/user-profile.yaml'
+    - 'apis/userprofile/**'
   pull_request:
     branches:
     - main
     paths:
-    - '.github/workflows/trips.yml'
-    - 'apis/trips/**'
+    - '.github/workflows/user-profile.yaml'
+    - 'apis/userprofile/**'
 
 jobs:
   # The build and test workflow
@@ -21,32 +21,29 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: apis/trips
+        working-directory: apis/userprofile
     steps:
     - uses: actions/checkout@v2
       with:
         token: ${{ secrets.GH_PAT }}
-    - name: Setup Go
-      uses: actions/setup-go@v2
+    
+    - name: Use Node.js 10.x
+      uses: actions/setup-node@v1
       with:
-        go-version: '1.14.0'
-    - name: Install dependencies
-      run: |
-        go version
-        go get -u golang.org/x/lint/golint
-    - name: Run build
-      run: go build .
-    - name: Run unit tests
-      run: go test ./tests
-    - name: Run integration tests
-      run: go test
+        node-version: 10.x
+    - name: Installing dependencies
+      run: npm ci
+    - name: Building the app
+      run: npm run build --if-present
+    - name: Running tests
+      run: npm test
   
   deploy:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: apis/trips
+        working-directory: apis/userprofile
     environment: prod
     steps:
     - uses: actions/checkout@v2
@@ -60,5 +57,5 @@ jobs:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
     - name: Build the image
       run: |
-        az acr build --image "devopsoh/api-trips:${{ steps.date.outputs.date }}${{ github.run_id }}" --registry ${{ secrets.ACRNAME }} --file Dockerfile .
+        az acr build --image "devopsoh/api-userprofile:${{ steps.date.outputs.date }}${{ github.run_id }}" --registry ${{ secrets.ACRNAME }} --file Dockerfile .
     
