@@ -44,7 +44,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: apis/poi
+        working-directory: apis/poi/web
     environment: prod
     steps:
     - uses: actions/checkout@v2
