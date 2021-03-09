@@ -21,6 +21,8 @@ jobs:
         working-directory: apis/trips
     steps:
     - uses: actions/checkout@v2
+      with:
+        token: ${{ secrets.GH_PAT }}
     - name: Setup Go
       uses: actions/setup-go@v2
       with:
