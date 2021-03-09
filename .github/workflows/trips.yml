@@ -52,7 +52,7 @@ jobs:
       with:
         token: ${{ secrets.GH_PAT }}
     - name: Set date
-      run: echo "::set-output date::$(date +'%Y-%m-%d')"
+      run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
     - name: Azure Login
       uses: azure/login@v1
       with:
