@@ -42,7 +42,7 @@ jobs:
       run: go test
   
   deploy:
-    if: github.ref == 'refs/heads/main'
+    # if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -52,12 +52,12 @@ jobs:
       with:
         token: ${{ secrets.GH_PAT }}
     - name: Set date
-      run: echo "DATE::$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+      run: echo "::set-output date::$(date +'%Y-%m-%d')"
     - name: Azure Login
       uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
     - name: Build the image
       run: |
-        az acr build --image "devopsoh/api-trips:${DATE}${github.run_id}" --registry $ACRNAME --file Dockerfile .
+        az acr build --image "devopsoh/api-trips:${steps.date.outputs.date}${github.run_id}" --registry $ACRNAME --file Dockerfile .
     
