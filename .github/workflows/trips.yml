@@ -60,5 +60,5 @@ jobs:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
     - name: Build the image
       run: |
-        az acr build --image "devopsoh/api-trips:${{ steps.date.outputs.date }}${{ github.run_id }}" --registry ${{ secrets.ACRNAME }} --file Dockerfile .
+        az acr build --image "devopsoh/api-trips:${{ steps.date.outputs.date }}${{ github.run_id }}" --image "devopsoh/api-trips:latest" --registry ${{ secrets.ACRNAME }} --file Dockerfile .
     
